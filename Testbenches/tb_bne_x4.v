@@ -68,7 +68,6 @@ module tb_bne_x4();
 
         #20;
         reset = 0;
-
         load_enable = 1;
 
         // addi x4,x0,5
@@ -108,7 +107,7 @@ module tb_bne_x4();
         fetch_enable = 1;
         reg_write_enable = 1;
 
-        #1200;
+        #290;
 
         $display("--------------------------------");
         $display("FINAL");

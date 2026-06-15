@@ -171,15 +171,15 @@ module tb_mul_rtype();
             $display("PASS : x3 = 35");
         else
             $display("FAIL : Expected x3 = 35");
-        $display(
-            "PC=%h INST=%h ex_op=%b bneq_ctrl=%b alu=%h branch_bneq=%b",
-            uut.pc,
-            uut.fetched_instruction,
-            uut.ex_alu_op,
-            uut.ex_bneq_control,
-            uut.ex_alu_result,
-            uut.branch_bneq
-            );
+//        $display(
+//            "PC=%h INST=%h ex_op=%b bneq_ctrl=%b alu=%h branch_bneq=%b",
+//            uut.pc,
+//            uut.fetched_instruction,
+//            uut.ex_alu_op,
+//            uut.ex_bneq_control,
+//            uut.ex_alu_result,
+//            uut.branch_bneq
+//            );
         $finish;
     end
 

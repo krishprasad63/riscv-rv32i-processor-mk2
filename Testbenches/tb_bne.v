@@ -85,36 +85,29 @@ module tb_bne();
 
         // addi x1,x0,5
         load_address = 32'h00000000;
-        load_data    = 32'h00500093;
-        #10;
+        load_data    = 32'h00500093; #10;
 
         // addi x2,x0,0
         load_address = 32'h00000004;
-        load_data    = 32'h00000113;
-        #10;
-
+        load_data    = 32'h00000113; #10;
+        
         // bne x1,x2,label
         load_address = 32'h00000008;
-        load_data    = 32'h00209C63;
-        #10;
+        load_data    = 32'h00209C63; #10;
 
         // NOPs
         load_address = 32'h0000000C;
-        load_data    = 32'h00000013;
-        #10;
-
+        load_data    = 32'h00000013; #10;
+        
         load_address = 32'h00000010;
-        load_data    = 32'h00000013;
-        #10;
+        load_data    = 32'h00000013; #10;
 
         load_address = 32'h00000014;
-        load_data    = 32'h00000013;
-        #10;
-
+        load_data    = 32'h00000013; #10;
+        
         load_address = 32'h00000018;
-        load_data    = 32'h00000013;
-        #10;
-
+        load_data    = 32'h00000013; #10;
+        
         // This instruction should be skipped
         // addi x3,x0,99
         load_address = 32'h0000001C;
@@ -151,12 +144,10 @@ module tb_bne();
         $display("------------------------------------");
         $display("FINAL RESULTS");
         $display("------------------------------------");
-
         $display("x1 = %0d", uut.Register[1]);
         $display("x2 = %0d", uut.Register[2]);
         $display("x3 = %0d", uut.Register[3]);
         $display("x4 = %0d", uut.Register[4]);
-
         $display("------------------------------------");
 
         if ((uut.Register[1] == 5) &&
@@ -170,7 +161,6 @@ module tb_bne();
         begin
             $display("FAIL : CHECK BRANCH PATH");
         end
-
         $finish;
     end
 
@@ -178,9 +168,7 @@ module tb_bne();
     // MONITOR
     //--------------------------------------------------
     always @(posedge clk) begin
-
         if(fetch_enable) begin
-
             $display(
             "T=%0t | PC=%h | INST=%h | x1=%h | x2=%h | x3=%h | x4=%h",
             $time,
@@ -191,7 +179,6 @@ module tb_bne();
             uut.Register[3],
             uut.Register[4]
             );
-
             $display(
             "ex_op=%b | bneq_ctrl=%b | alu=%h | branch_bneq=%b | branch_target=%h",
             uut.ex_alu_op,
@@ -200,11 +187,7 @@ module tb_bne();
             uut.branch_bneq,
             uut.branch_target
             );
-
             $display("------------------------------------");
-
         end
-
     end
-
 endmodule

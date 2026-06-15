@@ -32,7 +32,6 @@ module tb_add();
     reg [31:0] load_address;
     reg [31:0] load_data;
     reg [31:0] base_pc;
-
     wire [31:0] write_back_data;
 
     //--------------------------------------------------
@@ -72,7 +71,6 @@ module tb_add();
         fetch_enable     = 0;
         reg_write_enable = 0;
         reset            = 1;
-
         #20;
         reset = 0;
 
@@ -150,7 +148,6 @@ module tb_add();
         $display("------------------------------------");
         $display("Program Loaded");
         $display("------------------------------------");
-
         #600;
 
         //--------------------------------------------------
@@ -168,9 +165,7 @@ module tb_add();
             $display("PASS : ADD WORKING");
         else
             $display("FAIL : ADD FAILED");
-
         $finish;
-
     end
 
     //--------------------------------------------------
@@ -190,9 +185,6 @@ module tb_add();
             uut.Register[3],
             uut.write_back_data
             );
-
         end
-
     end
-
 endmodule

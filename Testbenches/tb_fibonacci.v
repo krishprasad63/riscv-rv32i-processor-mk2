@@ -72,23 +72,17 @@ module tb_fibonacci();
 
         load_enable = 1;
             
-            //--------------------------------------------------
         // x1 = 0
-        //--------------------------------------------------
         load_address = 32'h00000000;
         load_data    = 32'h00000093;   // addi x1,x0,0
         #10;
 
-        //--------------------------------------------------
         // x2 = 1
-        //--------------------------------------------------
         load_address = 32'h00000004;
         load_data    = 32'h00100113;   // addi x2,x0,1
         #10;
 
-        //--------------------------------------------------
         // x4 = 10
-        //--------------------------------------------------
         load_address = 32'h00000008;
         load_data    = 32'h00A00213;   // addi x4,x0,10
         #10;
@@ -129,8 +123,7 @@ module tb_fibonacci();
 
         // x2 = x3
         load_address = 32'h00000044;
-        load_data    = 32'h00018113;   // addi x2,x3,0
-        #10;
+        load_data    = 32'h00018113; #10;  // addi x2,x3,0 
 
         // wait
         load_address = 32'h00000048; load_data = 32'h00000013; #10;
@@ -177,18 +170,14 @@ module tb_fibonacci();
         $display("------------------------------------");
         $display("Program Loaded");
         $display("------------------------------------");
-
+        
         #50000;
-
+        
         $display("------------------------------------");
         $display("FINAL RESULTS");
         $display("------------------------------------");
-
-        $display("x1 = %0d", uut.Register[1]);
-        $display("x2 = %0d", uut.Register[2]);
-        $display("x3 = %0d", uut.Register[3]);
-        $display("x4 = %0d", uut.Register[4]);
-
+        $display("x1 = %0d", uut.Register[1]); $display("x2 = %0d", uut.Register[2]);
+        $display("x3 = %0d", uut.Register[3]); $display("x4 = %0d", uut.Register[4]);
         $finish;
     end
 
@@ -203,10 +192,8 @@ module tb_fibonacci();
             "T=%0t | PC=%h | x1=%0d | x2=%0d | x3=%0d | x4=%0d",
             $time,
             uut.pc,
-            uut.Register[1],
-            uut.Register[2],
-            uut.Register[3],
-            uut.Register[4]
+            uut.Register[1], uut.Register[2],
+            uut.Register[3], uut.Register[4]
             );
         end
     end
@@ -220,21 +207,15 @@ module tb_fibonacci();
             $display("FINAL RESULTS");
             $display("------------------------------------");
     
-            $display("x1 = %0d", uut.Register[1]);
-            $display("x2 = %0d", uut.Register[2]);
-            $display("x3 = %0d", uut.Register[3]);
-            $display("x4 = %0d", uut.Register[4]);
+            $display("x1 = %0d", uut.Register[1]); $display("x2 = %0d", uut.Register[2]);
+            $display("x3 = %0d", uut.Register[3]); $display("x4 = %0d", uut.Register[4]);
             
             $finish;
         end
         $display(
         "PC=%h wb_rd=%0d WB=%h x1=%h x2=%h x3=%h",
-        uut.pc,
-        uut.wb_rd,
-        uut.write_back_data,
-        uut.Register[1],
-        uut.Register[2],
-        uut.Register[3]
+        uut.pc, uut.wb_rd, uut.write_back_data,
+        uut.Register[1], uut.Register[2], uut.Register[3]
         );
     end
 endmodule

@@ -42,7 +42,8 @@ module riscv(
     wire [31:0] current_pc;
     wire [31:0] pc;
 
-    wire branch_beq, branch_bneq, branch_bge, branch_blt, branch_jump;// Will be updated from execute stage
+    // folllowing will be updated from execute stage
+    wire branch_beq, branch_bneq, branch_bge, branch_blt, branch_jump;
     wire [31:0] branch_imm_address, branch_imm_address_jump;
     
     wire [31:0] ex_branch_imm;
@@ -69,7 +70,6 @@ module riscv(
     );
     
     //IF/ID Register
-    
     wire [31:0] if_id_pc;
     wire [31:0] if_id_instruction;
     
@@ -82,24 +82,15 @@ module riscv(
         .out_instruction(if_id_instruction)
     );
     
-    
     //DECODE STAGE
-    wire [6:0]  decode_opcode;
-    wire [4:0]  decode_rd;
-    wire [2:0]  decode_funct3;
-    wire [4:0]  decode_rs1;
-    wire [4:0]  decode_rs2;
-    wire [6:0]  decode_funct7;
-    wire [31:0] decode_imm;
-    wire [6:0] decode_alu_opcode;
-    wire decode_alu_src;
-    wire decode_mem_read;
-    wire decode_mem_write;
-    wire decode_mem_to_reg;
-    wire decode_beq_control;
-    wire decode_bneq_control;
-    wire decode_blt_control;
-    wire decode_bge_control;
+    wire [6:0]  decode_opcode; wire [4:0]  decode_rd;
+    wire [2:0]  decode_funct3; wire [4:0]  decode_rs1;
+    wire [4:0]  decode_rs2;  wire [6:0]  decode_funct7;
+    wire [31:0] decode_imm;  wire [6:0] decode_alu_opcode;
+    wire decode_alu_src;     wire decode_mem_read;
+    wire decode_mem_write;   wire decode_mem_to_reg;
+    wire decode_beq_control; wire decode_bneq_control;
+    wire decode_blt_control; wire decode_bge_control;
 
     decode_stage decode(
         .clk(clk),
@@ -130,28 +121,15 @@ module riscv(
 
 
     // --- ID/EX PIPELINE REGISTER ---
-    // Wires coming out of the ID/EX register (inputs to the Execute stage)
-    wire [6:0]  ex_alu_op;
-    wire        ex_alu_src;
-    wire        ex_mem_read;
-    wire        ex_mem_write;
-    wire        ex_mem_to_reg;
-    wire        ex_beq_control;
-    wire        ex_bneq_control;
-    wire        ex_blt_control;
-    wire        ex_bge_control;
-    wire [31:0] ex_read_data_1;
-    wire [31:0] ex_read_data_2;
-    wire [31:0] ex_imm;
-    wire [4:0]  ex_rd;
-    wire [6:0]  ex_funct7;
-    wire [2:0]  ex_funct3;
+    wire [6:0] ex_alu_op; wire ex_alu_src; wire [31:0] ex_pc;
+    wire ex_mem_read; wire ex_mem_write; wire [31:0] ex_imm;
+    wire ex_mem_to_reg;   wire ex_beq_control;
+    wire ex_bneq_control; wire ex_blt_control;
+    wire [31:0] ex_read_data_1; wire ex_bge_control;
+    wire [31:0] ex_read_data_2; wire [31:0] ex_imm;
+    wire [4:0]  ex_rd; wire [6:0] ex_funct7;
+    wire [2:0] ex_funct3; wire [31:0] ex_instruction;
     
-    wire [31:0] ex_instruction;
-    wire [31:0] ex_pc;
-    
-    //branch_target declared above fetch stage
-
     assign branch_target = ex_pc + ex_branch_imm;
     
     id_ex_register id_ex_reg (
@@ -178,7 +156,6 @@ module riscv(
         .in_funct7(decode_funct7),
         .in_funct3(decode_funct3),
         .in_instruction(if_id_instruction),
-
         // Outputs to Execute
         .out_alu_op(ex_alu_op),
         .out_alu_src(ex_alu_src),
@@ -195,7 +172,6 @@ module riscv(
         .out_rd(ex_rd),
         .out_funct7(ex_funct7),
         .out_funct3(ex_funct3),
-        
         .out_branch_imm(ex_branch_imm),
         .out_pc(ex_pc)
     );
@@ -203,13 +179,7 @@ module riscv(
     // --- EXECUTE STAGE ---
     wire [31:0] ex_alu_result;
     wire ex_zero, ex_carry, ex_overflow;
-    
-    
-    // ALU inputs are now selected based on the registered alu_src signal
-//    wire [31:0] alu_input_A = (ex_alu_src) ? 32'd0:ex_read_data_1;
-//    wire [31:0] alu_input_B = (ex_alu_src) ? ex_imm : ex_read_data_2;
     wire [31:0] alu_input_A = ex_read_data_1;
-
     wire [31:0] alu_input_B = (ex_alu_src) ? ex_imm : ex_read_data_2;
 
     execute_stage execute(
@@ -246,15 +216,13 @@ module riscv(
     ex_mem_register ex_mem_reg (
         .clk(clk),
         .reset(reset),
-
         // Inputs from Execute
         .in_mem_read(ex_mem_read),
         .in_mem_write(ex_mem_write),
         .in_mem_to_reg(ex_mem_to_reg),
         .in_alu_result(ex_alu_result),
-        .in_store_data(ex_read_data_2), // Pass the data for SW instructions
+        .in_store_data(ex_read_data_2),
         .in_rd(ex_rd),
-
         // Outputs to Memory
         .out_mem_read(mem_mem_read),
         .out_mem_write(mem_mem_write),
