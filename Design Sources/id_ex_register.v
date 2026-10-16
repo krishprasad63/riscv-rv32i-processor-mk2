@@ -24,6 +24,7 @@
 module id_ex_register(
     input clk,
     input reset,
+    input flush,
     input  [31:0] in_branch_imm,
     input  [31:0] in_pc,
     
@@ -33,6 +34,8 @@ module id_ex_register(
     input in_mem_read,
     input in_mem_write,
     input in_mem_to_reg,
+    input in_reg_write,
+    
     input in_beq_control,
     input in_bneq_control,
     input in_blt_control,
@@ -55,6 +58,8 @@ module id_ex_register(
     output reg out_mem_read,
     output reg out_mem_write,
     output reg out_mem_to_reg,
+    output reg out_reg_write,
+    
     output reg out_beq_control,
     output reg out_bneq_control,
     output reg out_blt_control,
@@ -70,13 +75,15 @@ module id_ex_register(
     
     output reg [31:0] out_branch_imm,
     output reg [31:0] out_instruction,
-    output reg [31:0] out_pc
+    output reg [31:0] out_pc,
+    output reg [4:0] out_rs1,
+    output reg [4:0] out_rs2
     );
  
 
     always @(posedge clk or posedge reset)
     begin
-        if (reset) begin
+        if (reset || flush) begin
             /* On reset, clear all control signals and 
             data to a known safe state (like a NOP)*/
             out_alu_op      <= 7'b0;
@@ -84,6 +91,7 @@ module id_ex_register(
             out_mem_read    <= 1'b0;
             out_mem_write   <= 1'b0;
             out_mem_to_reg  <= 1'b0;
+            out_reg_write   <= 1'b0;
             out_beq_control <= 1'b0;
             out_bneq_control<= 1'b0;
             out_blt_control <= 1'b0;
@@ -95,7 +103,14 @@ module id_ex_register(
             out_rd          <= 5'b0;
             out_funct7      <= 7'b0;
             out_funct3      <= 3'b0;
+            out_rs1 <= 5'b0;
+            out_rs2 <= 5'b0;
+            
+            out_branch_imm  <= 32'b0;
+            out_instruction <= 32'h00000013;   // optional but recommended
+            out_pc          <= 32'b0;
         end
+        
         else begin
             /* On a clock edge, capture all 
             the inputs from the Decode stage*/
@@ -104,6 +119,7 @@ module id_ex_register(
             out_mem_read    <= in_mem_read;
             out_mem_write   <= in_mem_write;
             out_mem_to_reg  <= in_mem_to_reg;
+            out_reg_write   <= in_reg_write;
             out_beq_control <= in_beq_control;
             out_bneq_control<= in_bneq_control;
             out_blt_control <= in_blt_control;
@@ -118,6 +134,14 @@ module id_ex_register(
             out_branch_imm <= in_branch_imm;
             out_instruction <= in_instruction;
             out_pc <= in_pc;
+            out_rs1 <= in_rs1;
+            out_rs2 <= in_rs2;
         end
     end   
 endmodule
+
+
+
+
+
+

@@ -29,6 +29,7 @@ module ex_mem_register(
     input in_mem_read,
     input in_mem_write,
     input in_mem_to_reg,
+    input in_reg_write,
 
     // Data
     input [31:0] in_alu_result,
@@ -41,6 +42,7 @@ module ex_mem_register(
     output reg out_mem_read,
     output reg out_mem_write,
     output reg out_mem_to_reg,
+    output reg out_reg_write,
 
     // Data
     output reg [31:0] out_alu_result,
@@ -56,6 +58,7 @@ module ex_mem_register(
             out_mem_read    <= 1'b0;
             out_mem_write   <= 1'b0;
             out_mem_to_reg  <= 1'b0;
+            out_reg_write   <= 1'b0;
             
             out_alu_result  <= 32'b0;
             out_store_data  <= 32'b0;
@@ -68,6 +71,7 @@ module ex_mem_register(
             out_mem_read    <= in_mem_read;
             out_mem_write   <= in_mem_write;
             out_mem_to_reg  <= in_mem_to_reg;
+            out_reg_write   <= in_reg_write;
             
             out_alu_result  <= in_alu_result;
             out_store_data  <= in_store_data;

@@ -30,6 +30,7 @@ module control_unit(
     output reg mem_read,
     output reg mem_write,
     output reg mem_to_reg,
+    output reg reg_write,
 
     output reg beq_control,
     output reg bneq_control,
@@ -60,6 +61,7 @@ module control_unit(
         mem_read     = 0;
         mem_write    = 0;
         mem_to_reg   = 0;
+        reg_write    = 0;
 
         beq_control  = 0;
         bneq_control = 0;
@@ -74,6 +76,7 @@ module control_unit(
             7'b0110011: begin
 
                 alu_src = 0;
+                reg_write = 1;
 
                 case(funct3)
 
@@ -115,6 +118,7 @@ module control_unit(
             7'b0010011: begin
 
                 alu_src = 1;
+                reg_write = 1;
 
                 case(funct3)
 
@@ -176,6 +180,7 @@ module control_unit(
                 alu_src    = 1;
                 mem_read   = 1;
                 mem_to_reg = 1;
+                reg_write  = 1;
 
             end
 

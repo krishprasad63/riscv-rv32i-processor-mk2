@@ -23,6 +23,8 @@
 module if_id_register(
     input clk,
     input reset,
+    input if_id_write,
+    input flush,
 
     input [31:0] in_pc,
     input [31:0] in_instruction,
@@ -40,7 +42,13 @@ begin
         out_instruction <= 32'd0;
     end
 
-    else
+    else if(flush)
+    begin
+        out_pc <= 32'd0;
+        out_instruction <= 32'h00000013;   // NOP
+    end
+    
+    else if(if_id_write)
     begin
         out_pc <= in_pc;
         out_instruction <= in_instruction;

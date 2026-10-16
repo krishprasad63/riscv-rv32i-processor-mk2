@@ -39,6 +39,7 @@ module decode_stage(
     output alu_src,
     output wire mem_write,
     output wire mem_to_reg,
+    output wire reg_write,
 
     output beq_control,
     output bneq_control,
@@ -57,6 +58,7 @@ module decode_stage(
         .mem_read(mem_read),
         .mem_write(mem_write),
         .mem_to_reg(mem_to_reg),
+        .reg_write(reg_write),
         .beq_control(beq_control),
         .bneq_control(bneq_control),
         .blt_control(blt_control),

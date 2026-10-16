@@ -24,6 +24,7 @@ module program_counter(
     input clk,
     input reset,
     input enable,
+    input pc_write,
 
     input beq,
     input bneq,
@@ -51,7 +52,7 @@ module program_counter(
         if(reset)
             pc <= base_address;
 
-        else if(enable) begin
+        else if(enable && pc_write) begin
 
             // Branch taken
             if(beq || bneq || bge || blt)
@@ -71,14 +72,15 @@ module program_counter(
     //--------------------------------------------------
     // RETURN ADDRESS (PC + 4)
     //--------------------------------------------------
-    always @(posedge clk) begin
-
+    always @(posedge clk)
+    begin
+    
         if(reset)
             current_pc <= 32'd0;
-
-        else
+    
+        else if(enable && pc_write)
             current_pc <= pc + 32'd4;
-
+    
     end
 
 endmodule
