@@ -60,9 +60,9 @@ module tb_lw_sw_address();
     //--------------------------------
     initial begin
 
-        $display("====================================");
+        $display("==========================");
         $display(" LW / SW ADDRESS TEST ");
-        $display("====================================");
+        $display("==========================");
 
         reset            = 1;
         load_enable      = 0;
@@ -70,8 +70,7 @@ module tb_lw_sw_address();
         reg_write_enable = 0;
         base_pc          = 0;
 
-        #20;
-        reset = 0;
+        #20; reset = 0;
 
         //--------------------------------
         // PROGRAM LOAD
@@ -84,17 +83,19 @@ module tb_lw_sw_address();
         #10;
 
         // pipeline spacing
-        load_address = 32'h00000004; load_data = 32'h00000013; #10;
-        load_address = 32'h00000008; load_data = 32'h00000013; #10;
-        load_address = 32'h0000000C; load_data = 32'h00000013; #10;
-        load_address = 32'h00000010; load_data = 32'h00000013; #10;
+        load_address = 32'h00000004; 
+        load_data    = 32'h00000013; #10;
+        load_address = 32'h00000008; 
+        load_data    = 32'h00000013; #10;
+        load_address = 32'h0000000C; 
+        load_data    = 32'h00000013; #10;
+        load_address = 32'h00000010; 
+        load_data    = 32'h00000013; #10;
 
         //--------------------------------
         // sw x1,4(x0)
         //--------------------------------
-        load_address = 32'h00000014;
-        load_data    = 32'h00102223;
-        #10;
+        load_address = 32'h00000014; load_data = 32'h00102223; #10;
 
         // wait for store
         load_address = 32'h00000018; load_data = 32'h00000013; #10;
@@ -128,9 +129,10 @@ module tb_lw_sw_address();
 
         #1000;
 
-        //--------------------------------
+        //---------------------------------------------
         // FINAL RESULTS
-        //--------------------------------
+        //---------------------------------------------
+        
         $display("------------------------------------");
         $display("FINAL RESULTS");
         $display("------------------------------------");
@@ -145,51 +147,58 @@ module tb_lw_sw_address();
            (uut.Register[2] == 55) &&
            (uut.mem_stage.Memory[1] == 55))
         begin
+        
             $display("PASS : ADDRESSING WORKING");
+        
         end
         else
         begin
+        
             $display("FAIL : ADDRESSING ERROR");
+            
         end
 
         $finish;
 
     end
 
-    //--------------------------------
-    // MONITOR
-    //--------------------------------
-    always @(posedge clk)
-    begin
-        if(fetch_enable)
-        begin
+    endmodule
 
-            $display(
-            "PC=%h x1=%0d x2=%0d MEM0=%0d MEM1=%0d",
-            uut.pc,
-            uut.Register[1],
-            uut.Register[2],
-            uut.mem_stage.Memory[0],
-            uut.mem_stage.Memory[1]
-            );
 
-            $display(
-            "ALU=%h MEM_WR=%b MEM_RD=%b WB_RD=%0d WB=%h",
-            uut.mem_alu_result,
-            uut.mem_mem_write,
-            uut.mem_mem_read,
-            uut.wb_rd,
-            uut.write_back_data
-            );
+//    //--------------------------------
+//    // MONITOR
+//    //--------------------------------
+//    always @(posedge clk)
+//    begin
+//        if(fetch_enable)
+//        begin
 
-            $display("------------------------------------");
-            $display(
-            "INST=%h IMM=%h ALU=%h",
-            uut.if_id_instruction,
-            uut.ex_imm,
-            uut.ex_alu_result
-            );
-        end
-    end
+//            $display(
+//            "PC=%h x1=%0d x2=%0d MEM0=%0d MEM1=%0d",
+//            uut.pc,
+//            uut.Register[1],
+//            uut.Register[2],
+//            uut.mem_stage.Memory[0],
+//            uut.mem_stage.Memory[1]
+//            );
 
-endmodule
+//            $display(
+//            "ALU=%h MEM_WR=%b MEM_RD=%b WB_RD=%0d WB=%h",
+//            uut.mem_alu_result,
+//            uut.mem_mem_write,
+//            uut.mem_mem_read,
+//            uut.wb_rd,
+//            uut.write_back_data
+//            );
+
+//            $display("------------------------------------");
+//            $display(
+//            "INST=%h IMM=%h ALU=%h",
+//            uut.if_id_instruction,
+//            uut.ex_imm,
+//            uut.ex_alu_result
+//            );
+//        end
+//    end
+
+

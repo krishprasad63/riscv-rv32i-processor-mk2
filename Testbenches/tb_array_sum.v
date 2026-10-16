@@ -19,246 +19,133 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
 module tb_array_sum();
 
-reg clk;
-reg reset;
-reg load_enable;
-reg fetch_enable;
-reg reg_write_enable;
-reg [31:0] load_address;
-reg [31:0] load_data;
-reg [31:0] base_pc;
-
-wire [31:0] write_back_data;
-
-//--------------------------------------------------
-// DUT
-//--------------------------------------------------
-riscv uut(
-    .clk(clk),
-    .reset(reset),
-    .load_enable(load_enable),
-    .fetch_enable(fetch_enable),
-    .reg_write_enable(reg_write_enable),
-    .load_address(load_address),
-    .load_data(load_data),
-    .base_pc(base_pc),
-    .write_back_data(write_back_data)
-);
-
-//--------------------------------------------------
-// CLOCK
-//--------------------------------------------------
-initial begin
-    clk = 0;
-    forever #5 clk = ~clk;
-end
-
-//--------------------------------------------------
-// PROGRAM LOAD + RUN
-//--------------------------------------------------
-initial begin
-
-    $display("====================================");
-    $display(" ARRAY SUM TEST ");
-    $display("====================================");
-
-    reset            = 1;
-    load_enable      = 0;
-    fetch_enable     = 0;
-    reg_write_enable = 0;
-    base_pc          = 0;
-
-    #20;
-    reset = 0;
-
+    reg        clk;
+    reg        reset;
+    reg        load_enable;
+    reg        fetch_enable;
+    reg        reg_write_enable;
+    reg [31:0] load_address;
+    reg [31:0] load_data;
+    reg [31:0] base_pc;
+    
+    wire [31:0] write_back_data;
+    
     //--------------------------------------------------
-    // LOAD PROGRAM
+    // DUT
     //--------------------------------------------------
-    load_enable = 1;
-
-    //==================================================
-    // STORE ARRAY
-    //==================================================
-
-    load_address = 32'h00000000; load_data = 32'h00A00093; #10; // addi x1,x0,10
-    load_address = 32'h00000004; load_data = 32'h00000013; #10;
-    load_address = 32'h00000008; load_data = 32'h00000013; #10;
-    load_address = 32'h0000000C; load_data = 32'h00000013; #10;
-    load_address = 32'h00000010; load_data = 32'h00000013; #10;
-    load_address = 32'h00000014; load_data = 32'h00102023; #10; // sw
-
-    load_address = 32'h00000018; load_data = 32'h01400093; #10; // addi x1,x0,20
-    load_address = 32'h0000001C; load_data = 32'h00000013; #10;
-    load_address = 32'h00000020; load_data = 32'h00000013; #10;
-    load_address = 32'h00000024; load_data = 32'h00000013; #10;
-    load_address = 32'h00000028; load_data = 32'h00000013; #10;
-    load_address = 32'h0000002C; load_data = 32'h00102223; #10; // sw
-
-    load_address = 32'h00000030; load_data = 32'h01E00093; #10; // addi x1,x0,30
-    load_address = 32'h00000034; load_data = 32'h00000013; #10;
-    load_address = 32'h00000038; load_data = 32'h00000013; #10;
-    load_address = 32'h0000003C; load_data = 32'h00000013; #10;
-    load_address = 32'h00000040; load_data = 32'h00000013; #10;
-    load_address = 32'h00000044; load_data = 32'h00102423; #10; // sw
-
-    load_address = 32'h00000048; load_data = 32'h02800093; #10; // addi x1,x0,40
-    load_address = 32'h0000004C; load_data = 32'h00000013; #10;
-    load_address = 32'h00000050; load_data = 32'h00000013; #10;
-    load_address = 32'h00000054; load_data = 32'h00000013; #10;
-    load_address = 32'h00000058; load_data = 32'h00000013; #10;
-    load_address = 32'h0000005C; load_data = 32'h00102623; #10; // sw
-
-    //==================================================
-    // SUM ARRAY
-    //==================================================
-
-    load_address = 32'h00000060; load_data = 32'h00002103; #10; // lw x2,0(x0)
-
-    load_address = 32'h00000064; load_data = 32'h00000013; #10;
-    load_address = 32'h00000068; load_data = 32'h00000013; #10;
-    load_address = 32'h0000006C; load_data = 32'h00000013; #10;
-    load_address = 32'h00000070; load_data = 32'h00000013; #10;
-
-    load_address = 32'h00000074; load_data = 32'h00402183; #10; // lw x3,4(x0)
-
-    load_address = 32'h00000078; load_data = 32'h00000013; #10;
-    load_address = 32'h0000007C; load_data = 32'h00000013; #10;
-    load_address = 32'h00000080; load_data = 32'h00000013; #10;
-    load_address = 32'h00000084; load_data = 32'h00000013; #10;
-
-    load_address = 32'h00000088; load_data = 32'h003102B3; #10; // add x5,x2,x3
-
-    load_address = 32'h0000008C; load_data = 32'h00000013; #10;
-    load_address = 32'h00000090; load_data = 32'h00000013; #10;
-    load_address = 32'h00000094; load_data = 32'h00000013; #10;
-    load_address = 32'h00000098; load_data = 32'h00000013; #10;
-
-    load_address = 32'h0000009C; load_data = 32'h00802103; #10; // lw x2,8(x0)
-
-    load_address = 32'h000000A0; load_data = 32'h00000013; #10;
-    load_address = 32'h000000A4; load_data = 32'h00000013; #10;
-    load_address = 32'h000000A8; load_data = 32'h00000013; #10;
-    load_address = 32'h000000AC; load_data = 32'h00000013; #10;
-
-    load_address = 32'h000000B0; load_data = 32'h002282B3; #10; // add x5,x5,x2
-
-    load_address = 32'h000000B4; load_data = 32'h00000013; #10;
-    load_address = 32'h000000B8; load_data = 32'h00000013; #10;
-    load_address = 32'h000000BC; load_data = 32'h00000013; #10;
-    load_address = 32'h000000C0; load_data = 32'h00000013; #10;
-
-    load_address = 32'h000000C4; load_data = 32'h00C02103; #10; // lw x2,12(x0)
-
-    load_address = 32'h000000C8; load_data = 32'h00000013; #10;
-    load_address = 32'h000000CC; load_data = 32'h00000013; #10;
-    load_address = 32'h000000D0; load_data = 32'h00000013; #10;
-    load_address = 32'h000000D4; load_data = 32'h00000013; #10;
-
-    load_address = 32'h000000D8; load_data = 32'h002282B3; #10; // add x5,x5,x2
-
-    load_address = 32'h000000DC; load_data = 32'h00000013; #10;
-    load_address = 32'h000000E0; load_data = 32'h00000013; #10;
-    load_address = 32'h000000E4; load_data = 32'h00000013; #10;
-    load_address = 32'h000000E8; load_data = 32'h00000013; #10;
-
-    load_address = 32'h000000EC; load_data = 32'h00502823; #10; // sw x5,16(x0)
-
+    riscv uut (
+        .clk              (clk),
+        .reset            (reset),
+        .load_enable      (load_enable),
+        .fetch_enable     (fetch_enable),
+        .reg_write_enable (reg_write_enable),
+        .load_address     (load_address),
+        .load_data        (load_data),
+        .base_pc          (base_pc),
+        .write_back_data  (write_back_data)
+    );
+    
     //--------------------------------------------------
-    // START CPU
+    // CLOCK  (10 ns period → 100 MHz)
     //--------------------------------------------------
-    load_enable      = 0;
-    fetch_enable     = 1;
-    reg_write_enable = 1;
-
-    $display("------------------------------------");
-    $display("PROGRAM LOADED");
-    $display("------------------------------------");
-
-    #7000;
-
+    initial begin clk = 0; forever #5 clk = ~clk; end
+    
     //--------------------------------------------------
-    // FINAL REPORT
+    // HELPER TASK
     //--------------------------------------------------
-    $display("");
-    $display("====================================");
-    $display("FINAL REPORT");
-    $display("====================================");
+    task li;
+        input [31:0] addr, data;
+        begin load_address = addr; load_data = data; #10; end
+    endtask
+    
+    //--------------------------------------------------
+    // PARAMETERS  (change here if program changes)
+    //--------------------------------------------------
+    localparam INSTR_COUNT    = 15;
+    localparam PIPELINE_DEPTH = 5;
+    localparam CLK_PERIOD_NS  = 10;
+    
+    integer exec_start_ns;
+    real cpi;
+    //--------------------------------------------------
+    // MAIN
+    //--------------------------------------------------
+    initial begin
+    
+        {reset, load_enable, fetch_enable, reg_write_enable} = 4'b1000;
+        base_pc = 32'h0;
+        #20; reset = 0;
+    
+        load_enable = 1;
+    
+        // ----- Store: mem[0..3] = {10, 20, 30, 40} -----
+        li(32'h00, 32'h00A00093);  // addi x1, x0, 10
+        li(32'h04, 32'h00102023);  // sw   x1,  0(x0)   → mem[0] = 10
+    
+        li(32'h08, 32'h01400093);  // addi x1, x0, 20
+        li(32'h0C, 32'h00102223);  // sw   x1,  4(x0)   → mem[1] = 20
+    
+        li(32'h10, 32'h01E00093);  // addi x1, x0, 30
+        li(32'h14, 32'h00102423);  // sw   x1,  8(x0)   → mem[2] = 30
+    
+        li(32'h18, 32'h02800093);  // addi x1, x0, 40
+        li(32'h1C, 32'h00102623);  // sw   x1, 12(x0)   → mem[3] = 40
+    
+        // ----- Sum: x5 = mem[0]+mem[1]+mem[2]+mem[3] -----
+        li(32'h20, 32'h00002103);  // lw   x2,  0(x0)   ; x2 = 10
+        li(32'h24, 32'h00402183);  // lw   x3,  4(x0)   ; x3 = 20
+        li(32'h28, 32'h003102B3);  // add  x5, x2, x3   ; x5 = 30
+    
+        li(32'h2C, 32'h00802103);  // lw   x2,  8(x0)   ; x2 = 30
+        li(32'h30, 32'h002282B3);  // add  x5, x5, x2   ; x5 = 60
+    
+        li(32'h34, 32'h00C02103);  // lw   x2, 12(x0)   ; x2 = 40
+        li(32'h38, 32'h002282B3);  // add  x5, x5, x2   ; x5 = 100
+    
+        li(32'h3C, 32'h00502823);  // sw   x5, 16(x0)   → mem[4] = 100
+    
+        //--------------------------------------------------
+        // RUN - record time the CPU starts fetching
+        //--------------------------------------------------
+        load_enable      = 0;
+        fetch_enable     = 1;
+        reg_write_enable = 1;
+        exec_start_ns    = $time;
+    
+        #500;
+    
+        //--------------------------------------------------
+        // REPORT
+        //--------------------------------------------------
+        $display("------------------------------------------");
+        $display("  Array Sum Test  {10, 20, 30, 40}");
+        $display("------------------------------------------");
+        $display("  Expected  : 100");
+        $display("  Got       : %0d", uut.mem_stage.Memory[4]);
+        $display("  Result    : %s",
+            (uut.mem_stage.Memory[4] == 32'd100) ? "PASS" : "FAIL");
+        $display("------------------------------------------");
+        $display("  PERFORMANCE");
+        $display("  Clock            : %0d MHz",
+                    1000 / CLK_PERIOD_NS);
+        $display("  Instructions     : %0d",
+                    INSTR_COUNT);
+        $display("  Pipeline stages  : %0d",
+                    PIPELINE_DEPTH);
+        $display("  CPU cycles       : %0d  (instr + drain)",
+                    INSTR_COUNT + PIPELINE_DEPTH - 1);
+        $display("  CPU exec time    : %0d ns",
+                    (INSTR_COUNT + PIPELINE_DEPTH - 1) * CLK_PERIOD_NS);
+        cpi = (INSTR_COUNT + PIPELINE_DEPTH - 1.0) / INSTR_COUNT;
+        $display("  CPI              : %.2f", cpi);
+        $display("  Sim window used  : %0d ns  (fetch -> $finish)",
+                $time - exec_start_ns);
+        $display("  Total sim time   : %0d ns", $time);
+        $display("------------------------------------------");
+    
+        $finish;
+        end
 
-    $display("");
-    $display("REGISTERS");
-    $display("x1 = %0d", uut.Register[1]);
-    $display("x2 = %0d", uut.Register[2]);
-    $display("x3 = %0d", uut.Register[3]);
-    $display("x5 = %0d", uut.Register[5]);
-
-    $display("");
-    $display("MEMORY");
-    $display("MEM[0] = %0d", uut.mem_stage.Memory[0]);
-    $display("MEM[1] = %0d", uut.mem_stage.Memory[1]);
-    $display("MEM[2] = %0d", uut.mem_stage.Memory[2]);
-    $display("MEM[3] = %0d", uut.mem_stage.Memory[3]);
-    $display("MEM[4] = %0d", uut.mem_stage.Memory[4]);
-
-    $display("");
-    $display("PIPELINE");
-    $display("ex_pc          = %h", uut.ex_pc);
-    $display("ex_alu_result  = %h", uut.ex_alu_result);
-    $display("mem_addr       = %h", uut.mem_alu_result);
-    $display("mem_store_data = %h", uut.mem_store_data);
-    $display("wb_rd          = %0d", uut.wb_rd);
-    $display("write_back     = %h", uut.write_back_data);
-
-    $display("");
-
-    if(uut.mem_stage.Memory[4] == 100)
-        $display("PASS");
-    else
-        $display("FAIL");
-
-    $finish;
-end
-
-//--------------------------------------------------
-// DEBUG
-//--------------------------------------------------
-always @(posedge clk)
-begin
-    if(fetch_enable)
-    begin
-        $display(
-        "T=%0t PC=%h INST=%h x1=%0d x2=%0d x3=%0d x5=%0d",
-        $time,
-        uut.pc,
-        uut.if_id_instruction,
-        uut.Register[1],
-        uut.Register[2],
-        uut.Register[3],
-        uut.Register[5]
-        );
-
-        $display(
-        "EX_ALU=%h MEM_ADDR=%h MEM_WR=%b MEM_RD=%b WB=%h",
-        uut.ex_alu_result,
-        uut.mem_alu_result,
-        uut.mem_mem_write,
-        uut.mem_mem_read,
-        uut.write_back_data
-        );
-
-        $display(
-        "M0=%0d M1=%0d M2=%0d M3=%0d M4=%0d",
-        uut.mem_stage.Memory[0],
-        uut.mem_stage.Memory[1],
-        uut.mem_stage.Memory[2],
-        uut.mem_stage.Memory[3],
-        uut.mem_stage.Memory[4]
-        );
-
-        $display("------------------------------------------------");
-    end
-end
-
-endmodule
+        endmodule
